@@ -125,29 +125,29 @@ append_exchangeratehost_access_key <- function(url) {
 
 currencies <- function() {
 
-  display_api_info()
-
-  endpoint <- "http://api.exchangerate.host/live" %>%
-    append_exchangeratehost_access_key
-
-  live <- fromJSON(endpoint)
-
-  df <- live$quotes %>%
-    map_dbl(~ .x) %>%
-    stack() %>%
-    mutate(ind = substr(.data$ind, 4, nchar(as.character(.data$ind)))) %>%
-    mutate(values = as.double(.data$values)) %>%
-    .[,c(2,1)] %>%
-    # Add USD since it won't be included
-    add_row(ind = "USD", values = 1) %>%
-    # then sort alphabetically
-    arrange(.data$ind)
-
-  df %>%
-    select(.data$ind) %>%
-    rename(code = .data$ind) %>%
-    left_join(select(priceR::currency_info, .data$iso_code, .data$name), by = c("code" = "iso_code")) %>%
-    select(description = .data$name, code = .data$code)
+  # display_api_info()
+  #
+  # endpoint <- "http://api.exchangerate.host/live" %>%
+  #   append_exchangeratehost_access_key
+  #
+  # live <- fromJSON(endpoint)
+  #
+  # df <- live$quotes %>%
+  #   map_dbl(~ .x) %>%
+  #   stack() %>%
+  #   mutate(ind = substr(.data$ind, 4, nchar(as.character(.data$ind)))) %>%
+  #   mutate(values = as.double(.data$values)) %>%
+  #   .[,c(2,1)] %>%
+  #   # Add USD since it won't be included
+  #   add_row(ind = "USD", values = 1) %>%
+  #   # then sort alphabetically
+  #   arrange(.data$ind)
+  #
+  # df %>%
+  #   select(.data$ind) %>%
+  #   rename(code = .data$ind) %>%
+  #   left_join(select(priceR::currency_info, .data$iso_code, .data$name), by = c("code" = "iso_code")) %>%
+  #   select(description = .data$name, code = .data$code)
 
 }
 
@@ -717,7 +717,7 @@ historical_exchange_rates <- function(from, to, start_date, end_date) {
     stop(error_message)
   }
 
-  display_api_info()
+  #display_api_info()
 
   #api_time_splits <- make_dates(start_date, end_date, 365)
   api_time_splits <- make_dates(start_date, end_date, 300) #needed to reduce because retrieve_historical_rates_nbp adds -5 days margin so would break 365 API limit
